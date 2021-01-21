@@ -1,6 +1,7 @@
 redo-ifchange compile.binary
 
-binary=$(basename "$(head -1 < compile.binary)")
+read -r binary < compile.binary
+binary=$(basename "$binary")
 if [ "$binary" = musl-clang ]
 then
 	cat > "$3" <<-'END'
