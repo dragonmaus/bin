@@ -1,6 +1,6 @@
 set -- "$1" "$2.s" "$3"
 
-home=$(readlink "$(dirname "$0")")
+home=$(readlink -f "$(dirname "$0")")
 
 redo-ifchange "$2.exe.deps"
 
