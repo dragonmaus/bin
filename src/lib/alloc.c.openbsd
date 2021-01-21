@@ -1,8 +1,4 @@
-#if defined __OpenBSD__
 #include <stdlib.h>
-#else
-#include <malloc.h>
-#endif
 #include "alloc.h"
 #include "error.h"
 

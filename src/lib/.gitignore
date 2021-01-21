@@ -1,4 +1,5 @@
 /*.a
 /*.deps
 /*.o
+/alloc.c
 /error*.c
