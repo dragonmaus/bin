@@ -1,4 +1,4 @@
-binary=$(readlink -f "$(which sstrip strip 2> /dev/null | head -1)")
+binary=$(which sstrip strip 2> /dev/null | head -1)
 if [ -z "$binary" ]
 then
 	echo "$0: fatal: don't know how to build '$1'" 1>&2
