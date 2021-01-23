@@ -54,5 +54,14 @@ find * -type f 2> /dev/null \
 	fi
 )
 
-[ $d -eq 1 ] && read -r desk < .current-desktop && set-desktop "$desk"
-[ $l -eq 1 ] && read -r lock < .current-lockscreen && set-lockscreen "$lock"
+if [ $d -eq 1 ]
+then
+	read -r desk < .current-desktop
+	set-desktop "$desk"
+fi
+
+if [ $l -eq 1 ]
+then
+	read -r lock < .current-lockscreen
+	set-lockscreen "$lock"
+fi
