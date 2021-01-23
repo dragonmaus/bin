@@ -1,11 +1,21 @@
 #!/bin/sh
 
 d=0
-while getopts :d opt
+l=0
+s=0
+while getopts :dls opt
 do
 	case $opt in
 	(d)
 		d=1
+		;;
+	(l)
+		l=1
+		;;
+	(s)
+		d=1
+		l=1
+		s=1
 		;;
 	(*)
 		exit 1
@@ -16,15 +26,31 @@ shift $((OPTIND - 1))
 
 cd "$(xdg-user-dir BACKGROUNDS)"
 
-desktop=$(readlink .current-desktop 2> /dev/null)
+[ $d -eq 1 ] && read -r desk < .current-desktop
+[ $l -eq 1 ] && read -r lock < .current-lockscreen
 
 find * -type f 2> /dev/null \
-| grep -Fvx -e "$desktop" \
+| grep -Fvx -e "$desk" -e "$lock" \
 | sort -R \
 | head -1 \
 | (
-	IFS= read -r desktop
-	ln -fns "$desktop" .current-desktop
+	IFS= read -r desk
+	IFS= read -r lock
+
+	[ $s -eq 1 ] && lock=$desk
+
+	if [ $d -eq 1 ]
+	then
+		echo "$desk" > .current-desktop{new}
+		mv -f .current-desktop{new} .current-desktop
+	fi
+
+	if [ $l -eq 1 ]
+	then
+		echo "$lock" > .current-lockscreen{new}
+		mv -f .current-lockscreen{new} .current-lockscreen
+	fi
 )
 
-[ "$d" -eq 1 ] && set-desktop .current-desktop
+[ $d -eq 1 ] && read -r desk < .current-desktop && set-desktop "$desk"
+[ $l -eq 1 ] && read -r lock < .current-lockscreen && set-lockscreen "$lock"
