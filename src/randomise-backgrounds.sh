@@ -1,5 +1,7 @@
 #!/bin/sh
 
+. echo.sh
+
 d=0
 l=0
 s=0
@@ -32,7 +34,7 @@ cd "$(xdg-user-dir BACKGROUNDS)"
 find * -type f 2> /dev/null \
 | grep -Fvx -e "$desk" -e "$lock" \
 | sort -R \
-| head -1 \
+| head -2 \
 | (
 	IFS= read -r desk
 	IFS= read -r lock
