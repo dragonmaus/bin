@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
 from sys import stdin, stdout
+
+# pip install PyYAML
 from yaml import load, dump
 try:
     from yaml import CLoader as Loader, CDumper as Dumper
