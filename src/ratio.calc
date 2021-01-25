@@ -9,4 +9,4 @@ config("tilde", 0),;
 
 r = eval(argv(1)) / eval(argv(2));
 
-printf("%r (%f)\n", r, r);
+printf("%f (%r)\n", trunc(r, 8), r);
