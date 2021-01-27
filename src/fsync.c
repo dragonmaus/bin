@@ -1,27 +1,40 @@
+#include <err.h>
+#include <fcntl.h>
+#include <libgen.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
-#include "open.h"
-#include "strerr.h"
-
-#define FATAL "fsync: fatal: "
-#define USAGE "Usage: fsync file [file ...]"
 
 	int
 main(int argc, const char **argv)
 {
 	register int fd;
 
-	if (!--argc) {
-		strerr_die1x(1, USAGE);
+#ifdef __OpenBSD__
+	if (pledge("stdio rpath unveil", NULL) != 0) {
+		err(EXIT_FAILURE, "Unable to restrict operations");
 	}
+#endif
+
+	if (!--argc) {
+		fprintf(stderr, "Usage: %s file [file ...]\n", basename(*argv));
+	}
+
 	while (*++argv) {
-		fd = open_read(*argv);
-		if (fd == -1) {
-			strerr_die4sys(1, FATAL, "Unable to open file '", *argv, "': ");
+#ifdef __OpenBSD__
+		if (unveil(*argv, "r") != 0) {
+			err(EXIT_FAILURE, "Unable to unveil '%s'", *argv);
 		}
-		if (fsync(fd) == -1) {
-			strerr_die4sys(1, FATAL, "Unable to sync file '", *argv, "': ");
+#endif
+		fd = open(*argv, O_RDONLY | O_NONBLOCK | O_SYNC | O_NOFOLLOW);
+		if (fd == -1) {
+			err(EXIT_FAILURE, "Unable to open file '%s'", *argv);
+		}
+		if (fsync(fd) != 0) {
+			err(EXIT_FAILURE, "Unable to synchronise file '%s'", *argv);
 		}
 		close(fd);
 	}
-	return 0;
+
+	return EXIT_SUCCESS;
 }
