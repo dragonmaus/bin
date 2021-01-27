@@ -69,7 +69,7 @@ main(int argc, const char **argv)
 		errx(EXIT_FAILURE, "Must be run as root");
 	}
 
-#ifdef OpenBSD
+#ifdef __OpenBSD__
 	if (pledge("stdio rpath", NULL) != 0) {
 		err(EXIT_FAILURE, "Unable to restrict operations");
 	}
