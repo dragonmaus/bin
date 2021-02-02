@@ -6,8 +6,8 @@
 
 #include "utf8.h"
 
-enum level { okay, space, warning, failure, encoding };
-const char *tag[] = { "OKAY", "SPCE", "WARN", "FAIL", "UTF8" };
+enum level { okay, space, meta, illegal, encoding };
+const char *tag[] = { "OKAY", "SPCE", "META", "ILL!", "ENC!" };
 
 int count[] = { 0, 0, 0, 0, 0 };
 
@@ -38,15 +38,15 @@ printer(const char *path, const struct stat *stat, int flag, struct FTW *ftw)
 	if (!utf8_valid(n)) {
 		level = encoding;
 	}
-	while (level < failure && (c = *n++)) {
+	while (level < illegal && (c = *n++)) {
 		if (c == ' ' && *n == 0) {
-			level = failure;
+			level = illegal;
 		}
 		else if (c < 0x20 || c == 0x7f) {
-			level = failure;
+			level = illegal;
 		}
 		else if (oneof("\"&'()*;<>?[\\]|", c)) {
-			level = warning;
+			level = meta;
 		}
 		else if (c == ' ' && level == okay) {
 			level = space;
@@ -81,8 +81,8 @@ main(int argc, const char **argv)
 
 	printf("Total:\t%d clean, %d spaces, %d metacharacters, "
 	       "%d illegal characters, %d encoding errors\n",
-	       count[okay], count[space], count[warning],
-	       count[failure], count[encoding]);
+	       count[okay], count[space], count[meta],
+	       count[illegal], count[encoding]);
 
 	return EXIT_SUCCESS;
 }
