@@ -1,16 +1,17 @@
 #!/bin/sh
 
-mode=-z
-while getopts :cstz opt
+mode=fill
+while getopts :cfmst opt
 do
 	case $opt in
-	(c) mode=-c ;;  # center
-	(s) mode=   ;;  # scale
-	(t) mode=-t ;;  # tile
-	(z) mode=-z ;;  # zoom
-	(*) break   ;;
+	(c) mode=center ;;
+	(f) mode=fill   ;;
+	(m) mode=max    ;;
+	(s) mode=scale  ;;
+	(t) mode=tile   ;;
+	(*) break       ;;
 	esac
 done
 shift $((OPTIND - 1))
 
-exec bgs $mode "$@"
+exec feh --no-fehbg --bg-$mode "$@"
