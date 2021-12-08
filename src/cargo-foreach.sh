@@ -50,6 +50,7 @@ cd "$dir"
 ls -A | while IFS= read -r dir
 do
 	[ -d "$dir" -a -f "$dir/Cargo.toml" ] || continue
+	[ -e "$dir/.skip" -o -e "$dir.skip" ] && continue
 	$verbose && echo ">> $dir"
 	if ! (cd "$dir"; $quiet && exec 2> /dev/null; exec "$@") && ! $quiet
 	then
